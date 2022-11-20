@@ -6,6 +6,7 @@ package com.typesafe.config.impl;
 import java.util.*;
 
 import com.typesafe.config.ConfigException;
+import com.typesafe.config.ConfigParseOptions;
 
 final class Path {
 
@@ -184,7 +185,7 @@ final class Path {
         for (int i = 0; i < length; ++i) {
             char c = s.charAt(i);
 
-            if (Character.isLetterOrDigit(c) || c == '-' || c == '_')
+            if (Character.isLetterOrDigit(c) || c == '-' || c == '_' || c == '.')
                 continue;
             else
                 return true;
@@ -198,7 +199,7 @@ final class Path {
         else
             sb.append(first);
         if (remainder != null) {
-            sb.append(".");
+            sb.append(ConfigParseOptions.PATH_TOKEN_SEPARATOR);
             remainder.appendToStringBuilder(sb);
         }
     }

@@ -23,6 +23,11 @@ import com.typesafe.config.impl.ConfigImplUtil;
  *
  */
 public final class ConfigParseOptions {
+    /**
+     * a.b.c
+     * a-&gt;b-&gt;c
+     */
+    public static final String PATH_TOKEN_SEPARATOR = "->";
     final ConfigSyntax syntax;
     final String originDescription;
     final boolean allowMissing;

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -248,7 +249,7 @@ public class ConfigImpl {
                 return emptyObject(origin);
 
             if (mapMode == FromMapMode.KEYS_ARE_KEYS) {
-                Map<String, AbstractConfigValue> values = new HashMap<String, AbstractConfigValue>();
+                Map<String, AbstractConfigValue> values = new LinkedHashMap<String, AbstractConfigValue>();
                 for (Map.Entry<?, ?> entry : ((Map<?, ?>) object).entrySet()) {
                     Object key = entry.getKey();
                     if (!(key instanceof String))

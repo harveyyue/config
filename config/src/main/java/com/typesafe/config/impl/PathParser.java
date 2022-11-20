@@ -5,6 +5,7 @@ package com.typesafe.config.impl;
 
 import com.typesafe.config.ConfigException;
 import com.typesafe.config.ConfigOrigin;
+import com.typesafe.config.ConfigParseOptions;
 import com.typesafe.config.ConfigSyntax;
 import com.typesafe.config.ConfigValueType;
 
@@ -181,26 +182,28 @@ final class PathParser {
 
     private static Collection<Token> splitTokenOnPeriod(Token t, ConfigSyntax flavor) {
         String tokenText = t.tokenText();
-        if (tokenText.equals(".")) {
+        if (tokenText.equals(ConfigParseOptions.PATH_TOKEN_SEPARATOR)) {
             return Collections.singletonList(t);
         }
-        String[] splitToken = tokenText.split("\\.");
+        String[] splitToken = tokenText.split(ConfigParseOptions.PATH_TOKEN_SEPARATOR);
         ArrayList<Token> splitTokens = new ArrayList<Token>();
         for (String s : splitToken) {
             if (flavor == ConfigSyntax.CONF)
                 splitTokens.add(Tokens.newUnquotedText(t.origin(), s));
             else
                 splitTokens.add(Tokens.newString(t.origin(), s, "\"" + s + "\""));
-            splitTokens.add(Tokens.newUnquotedText(t.origin(), "."));
+            splitTokens.add(Tokens.newUnquotedText(t.origin(), ConfigParseOptions.PATH_TOKEN_SEPARATOR));
         }
-        if (tokenText.charAt(tokenText.length() - 1) != '.')
+        if (!tokenText.substring(tokenText.length() - ConfigParseOptions.PATH_TOKEN_SEPARATOR.length(), tokenText.length())
+                .equals(ConfigParseOptions.PATH_TOKEN_SEPARATOR)) {
             splitTokens.remove(splitTokens.size() - 1);
+        }
         return splitTokens;
     }
 
     private static void addPathText(List<Element> buf, boolean wasQuoted,
                                     String newText) {
-        int i = wasQuoted ? -1 : newText.indexOf('.');
+        int i = wasQuoted ? -1 : newText.indexOf(ConfigParseOptions.PATH_TOKEN_SEPARATOR);
         Element current = buf.get(buf.size() - 1);
         if (i < 0) {
             // add to current path element
@@ -215,7 +218,7 @@ final class PathParser {
             // then start a new element
             buf.add(new Element("", false));
             // recurse to consume remainder of newText
-            addPathText(buf, false, newText.substring(i + 1));
+            addPathText(buf, false, newText.substring(i + ConfigParseOptions.PATH_TOKEN_SEPARATOR.length()));
         }
     }
 
